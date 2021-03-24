@@ -11,6 +11,8 @@ module Sidekiq::CloudWatchMetrics
     Sidekiq.configure_server do |config|
       publisher = Publisher.new(**kwargs)
 
+      Rails.logger.warn "33070e07-95cc-4caf-bd21-4129c7cec7eb: Booting worker #{Sidekiq.options[:lifecycle_events].has_key?(:leader)}"
+
       if Sidekiq.options[:lifecycle_events].has_key?(:leader)
         # Only publish metrics on the leader if we have a leader (sidekiq-ent)
         config.on(:leader) do
@@ -44,6 +46,8 @@ module Sidekiq::CloudWatchMetrics
     end
 
     def start
+      Rails.logger.warn "33070e07-95cc-4caf-bd21-4129c7cec7eb: Starting Sidekiq CloudWatch Metrics Publisher"
+
       logger.info { "Starting Sidekiq CloudWatch Metrics Publisher" }
 
       @done = false
@@ -55,12 +59,16 @@ module Sidekiq::CloudWatchMetrics
     end
 
     def run
+      Rails.logger.warn "33070e07-95cc-4caf-bd21-4129c7cec7eb: Started Sidekiq CloudWatch Metrics Publisher"
+
       logger.info { "Started Sidekiq CloudWatch Metrics Publisher" }
 
       # Publish stats every INTERVAL seconds, sleeping as required between runs
       now = Time.now.to_f
       tick = now
       until @stop
+        Rails.logger.warn "33070e07-95cc-4caf-bd21-4129c7cec7eb: Publishing Sidekiq CloudWatch Metrics"
+
         logger.info { "Publishing Sidekiq CloudWatch Metrics" }
         publish
 
